@@ -21,9 +21,7 @@ import (
 
 type IUserService interface {
 	Register(ctx context.Context, req dto.RegisterRequest) error
-	GoogleRegister(ctx context.Context, req dto.RegisterRequest) error
 	Login(ctx context.Context, req dto.LoginRequest) (dto.LoginResponse, error)
-	GoogleLogin(ctx context.Context, req dto.GoogleLoginRequest) (dto.LoginResponse, error)
 	GetUser(ctx context.Context, req dto.TokenLoginRequest) (dto.TokenLoginResponse, error)
 	Update(ctx context.Context, req dto.UpdateRequest) error
 	Delete(ctx context.Context, req dto.DeleteRequest) error
@@ -97,35 +95,6 @@ func (us *userService) Register(ctx context.Context, req dto.RegisterRequest) er
 	return nil
 }
 
-func (us *userService) GoogleRegister(ctx context.Context, req dto.RegisterRequest) error {
-	time := helper.GetCurrentTime()
-
-	user := entity.User{
-		ID:          uuid.New(),
-		DisplayName: req.DisplayName,
-		Email:       req.Email,
-		CreatedAt:   time,
-		UpdatedAt:   time,
-	}
-
-	if err := us.ur.Create(ctx, &user); err != nil {
-		var pgErr *pgconn.PgError
-		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
-			us.logger.WithFields(map[string]interface{}{
-				"error": err.Error(),
-			}).Error("[userService.GoogleRegister] failed to register user to db")
-			return &response.ErrUserAlreadyExists
-		}
-		return err
-	}
-
-	us.logger.WithFields(map[string]interface{}{
-		"email": req.Email,
-	}).Info("[userService.GoogleRegister] google user registered to db")
-
-	return nil
-}
-
 func (us *userService) Login(ctx context.Context, req dto.LoginRequest) (dto.LoginResponse, error) {
 	user, err := us.ur.FindByEmail(ctx, req.Email)
 	if err != nil {
@@ -163,36 +132,6 @@ func (us *userService) Login(ctx context.Context, req dto.LoginRequest) (dto.Log
 		"email": user.Email,
 	}).Info("[userService.Login] user logged in")
 	return resp, nil
-}
-
-func (us *userService) GoogleLogin(ctx context.Context, req dto.GoogleLoginRequest) (dto.LoginResponse, error) {
-	user, err := us.ur.FindByEmail(ctx, req.Email)
-	if err != nil {
-		us.logger.WithFields(map[string]interface{}{
-			"error": err.Error(),
-			"email": req.Email,
-		}).Error("[userService.GoogleLogin] failed to find user by email")
-		return dto.LoginResponse{}, err
-	}
-
-	token, err := us.jwt.CreateToken(&user)
-	if err != nil {
-		us.logger.WithFields(map[string]interface{}{
-			"error": err.Error(),
-			"email": req.Email,
-		}).Error("[userService.GoogleLogin] failed to create jwt token")
-		return dto.LoginResponse{}, &response.ErrJWTToken
-	}
-
-	us.logger.WithFields(map[string]interface{}{
-		"email": user.Email,
-	}).Info("[userService.GoogleLogin] user logged in")
-
-	return dto.LoginResponse{
-		DisplayName: user.DisplayName,
-		ID:          user.ID,
-		Token:       token,
-	}, nil
 }
 
 func (us *userService) GetUser(ctx context.Context, req dto.TokenLoginRequest) (dto.TokenLoginResponse, error) {

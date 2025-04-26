@@ -7,9 +7,11 @@ import (
 )
 
 type ChatRequest struct {
-	UserID  uuid.UUID `json:"user_id"`
-	Content string    `json:"content" validate:"required"`
-	Type    string    `json:"type" validate:"required,oneof=text image"`
+	UserID         uuid.UUID `json:"user_id"`
+	Content        string    `json:"content" validate:"required"`
+	Type           string    `json:"type"`
+	SourceLanguage string    `json:"source_language" validate:"required"`
+	TargetLanguage string    `json:"target_language" validate:"required"`
 }
 
 type ChatResponse struct {

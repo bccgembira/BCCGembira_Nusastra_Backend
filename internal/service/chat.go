@@ -38,6 +38,7 @@ func NewChatService(cr repository.IChatRepository, logger *logrus.Logger, claude
 }
 
 func (cs *chatService) CreateChat(ctx context.Context, req dto.ChatRequest) (dto.ChatResponse, error) {
+	req.Type = "text"
 	promptResp, err := cs.claude.CreateChat(req)
 	if err != nil {
 		cs.logger.WithFields(map[string]interface{}{
