@@ -24,34 +24,34 @@ func NewError(code int, err string) Errors {
 
 var (
 	// Database Errors
-	ErrConnectDatabase = NewError(fiber.StatusInternalServerError, "Unable to connect to the database. Please try again later.")
-	ErrMigrateDatabase = NewError(fiber.StatusInternalServerError, "There was an issue with database migration. Please contact support.")
+	ErrConnectDatabase = NewError(fiber.StatusInternalServerError, "We are experiencing issues connecting to our database. Please try again later.")
+	ErrMigrateDatabase = NewError(fiber.StatusInternalServerError, "We encountered a problem with our database setup. Please contact support for assistance.")
 
 	// User Errors
-	ErrUserNotFound           = NewError(fiber.StatusNotFound, "User not found. Please check your details and try again.")
-	ErrUserAlreadyExists      = NewError(fiber.StatusConflict, "This email is already registered. Please try logging in or use a different email.")
-	ErrHashPassword           = NewError(fiber.StatusInternalServerError, "Something went wrong while processing your password. Please try again.")
-	ErrGenerateToken          = NewError(fiber.StatusInternalServerError, "There was an error generating your authentication token. Please try again.")
-	ErrInvalidEmail           = NewError(fiber.StatusBadRequest, "Please provide a valid email address.")
+	ErrUserNotFound           = NewError(fiber.StatusNotFound, "We couldn't find a user with the provided details. Please check and try again.")
+	ErrUserAlreadyExists      = NewError(fiber.StatusConflict, "This email is already registered. Please log in or use a different email.")
+	ErrHashPassword           = NewError(fiber.StatusInternalServerError, "We encountered an issue processing your password. Please try again.")
+	ErrGenerateToken          = NewError(fiber.StatusInternalServerError, "We had trouble generating your authentication token. Please try again.")
+	ErrInvalidEmail           = NewError(fiber.StatusBadRequest, "The email address you provided is invalid. Please enter a valid email.")
 	ErrInvalidPassword        = NewError(fiber.StatusBadRequest, "The password you entered is incorrect. Please try again.")
-	ErrJWTToken               = NewError(fiber.StatusInternalServerError, "Something went wrong with the token. Please try again.")
-	ErrFailedSendNotification = NewError(fiber.StatusInternalServerError, "There was an error sending the notification. Please try again later.")
-	ErrUnauthorized           = NewError(fiber.StatusUnauthorized, "Invalid login credentials. Please check your username and password.")
-	ErrSetHTML                = NewError(fiber.StatusInternalServerError, "There was an error setting the HTML template. Please try again.")
-	ErrExecuteHTML            = NewError(fiber.StatusInternalServerError, "We encountered an issue while processing the page. Please try again.")
-	ErrCredentialMismatch     = NewError(fiber.StatusUnauthorized, "The credentials provided do not match our records.")
-	ErrForbiddenRole          = NewError(fiber.StatusForbidden, "You do not have permission to access this resource.")
-	ErrFailedDeleteImage      = NewError(fiber.StatusInternalServerError, "Failed to delete the image. Please try again.")
-
-	// Google Errors
-	ErrStateNoMatch                = NewError(fiber.StatusBadRequest, "The state does not match. Please try again.")
-	ErrFailedFetchUserInfo         = NewError(fiber.StatusInternalServerError, "Failed to fetch your Google user data. Please try again later.")
-	ErrReadResponseBody            = NewError(fiber.StatusInternalServerError, "There was an issue reading the response. Please try again.")
-	ErrUnmarshal                   = NewError(fiber.StatusBadRequest, "There was a problem with the data we received. Please try again.")
-	ErrRegisterInternalServerError = NewError(fiber.StatusInternalServerError, "An error occurred while registering. Please try again later.")
-	ErrInvalidCode                 = NewError(fiber.StatusBadRequest, "The code provided is invalid. Please check and try again.")
+	ErrJWTToken               = NewError(fiber.StatusInternalServerError, "We encountered an issue with your token. Please try again.")
+	ErrFailedSendNotification = NewError(fiber.StatusInternalServerError, "We couldn't send the notification. Please try again later.")
+	ErrUnauthorized           = NewError(fiber.StatusUnauthorized, "Your login credentials are incorrect. Please check and try again.")
+	ErrSetHTML                = NewError(fiber.StatusInternalServerError, "We encountered an issue setting up the page. Please try again.")
+	ErrExecuteHTML            = NewError(fiber.StatusInternalServerError, "We had trouble processing the page. Please try again.")
+	ErrCredentialMismatch     = NewError(fiber.StatusUnauthorized, "The credentials you provided don't match our records. Please try again.")
+	ErrForbiddenRole          = NewError(fiber.StatusForbidden, "You don't have permission to access this resource.")
+	ErrFailedDeleteImage      = NewError(fiber.StatusInternalServerError, "We couldn't delete the image. Please try again.")
 
 	// Chat Errors
-	ErrChatFailed     = NewError(fiber.StatusInternalServerError, "Failed to create chat. Please try again.")
-	ErrSaveChatFailed = NewError(fiber.StatusInternalServerError, "Failed to save chat. Please try again.")
+	ErrChatFailed     = NewError(fiber.StatusInternalServerError, "We couldn't create the chat. Please try again.")
+	ErrSaveChatFailed = NewError(fiber.StatusInternalServerError, "We couldn't save the chat. Please try again.")
+
+	// Payment Errors
+	ErrSavePayment         = NewError(fiber.StatusInternalServerError, "We encountered an issue processing your payment. Please try again.")
+	ErrUpdateStatus        = NewError(fiber.StatusInternalServerError, "We couldn't update the status. Please try again.")
+	ErrFetchStatus         = NewError(fiber.StatusInternalServerError, "We couldn't retrieve the status. Please try again.")
+	ErrFailedFindUser      = NewError(fiber.StatusInternalServerError, "We couldn't find the user. Please try again.")
+	ErrFailedCreatePayment = NewError(fiber.StatusInternalServerError, "We couldn't process your payment. Please try again.")
+	ErrMissingStatus       = NewError(fiber.StatusBadRequest, "The payment status is missing. Please provide a valid status.")
 )
