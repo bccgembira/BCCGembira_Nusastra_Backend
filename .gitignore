@@ -29,3 +29,4 @@ proto
 .idea
 go.sum
 go.mod
+*test
