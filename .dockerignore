@@ -1,0 +1,28 @@
+.dockerignore
+
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+bcc-gembira
+
+# Output folders
+/build
+/bin
+/dist
+
+# VCS
+.git
+.gitignore
+
+# Editor configs
+*.swp
+*.swo
+*.tmp
+*.bak
+*.orig
+*.idea/
+.vscode/

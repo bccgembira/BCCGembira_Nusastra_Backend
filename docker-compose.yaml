@@ -1,0 +1,51 @@
+name: nusastra
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend-nusastra
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./storage/logs:/app/storage/logs 
+    networks:
+      - backend-network
+    restart: always
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://backend:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  db:
+    image: postgres:latest
+    container_name: db-nusastra
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+      - PORT=${DATABASE_PORT}
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - backend-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  backend-network:
+    driver: bridge
+
+volumes:
+  db-data:
