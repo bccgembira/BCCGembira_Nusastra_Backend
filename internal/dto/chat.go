@@ -1,6 +1,10 @@
 package dto
 
-import "github.com/google/uuid"
+import (
+	"mime/multipart"
+
+	"github.com/google/uuid"
+)
 
 type ChatRequest struct {
 	UserID  uuid.UUID `json:"user_id"`
@@ -9,7 +13,7 @@ type ChatRequest struct {
 }
 
 type ChatResponse struct {
-	ID             string    `json:"id"`
+	ID             string    `json:"id,omitempty"`
 	UserID         uuid.UUID `json:"user_id"`
 	SourceLanguage string    `json:"source_language,omitempty"`
 	Translation    string    `json:"translation,omitempty"`
@@ -18,4 +22,25 @@ type ChatResponse struct {
 
 type ChatHistoryRequest struct {
 	ID string `json:"id"`
+}
+
+type ChatImageRequest struct {
+	UserID uuid.UUID             `json:"user_id"`
+	File   *multipart.FileHeader `json:"file,omitempty"`
+	Url    string                `json:"url,omitempty"`
+}
+
+type ChatOCRResponse struct {
+	ParsedResults []OCRParsedResult `json:"ParsedResults"`
+	OCRExitCode   int               `json:"OCRExitCode"`
+}
+
+type OCRParsedResult struct {
+	ParsedText   string `json:"ParsedText"`
+	ErrorMessage string `json:"ErrorMessage"`
+}
+
+type OCRRequest struct {
+	File     *multipart.FileHeader `json:"file"`
+	Filetype string                `json:"filetype"`
 }

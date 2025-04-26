@@ -12,6 +12,7 @@ import (
 type IChatHandler interface {
 	CreateChat() fiber.Handler
 	GetChatByID() fiber.Handler
+	CreateChatWithOCR() fiber.Handler
 }
 
 type chatHandler struct {
@@ -50,7 +51,7 @@ func (ch *chatHandler) CreateChat() fiber.Handler {
 			return err
 		}
 
-		return response.Success(c, "chat", resp)
+		return response.Success(c, "chats", resp)
 	}
 }
 
@@ -72,6 +73,35 @@ func (ch *chatHandler) GetChatByID() fiber.Handler {
 			return err
 		}
 
-		return response.Success(c, "chat", resp)
+		return response.Success(c, "chats", resp)
+	}
+}
+
+func (ch *chatHandler) CreateChatWithOCR() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		req := dto.ChatImageRequest{}
+		file, err := c.FormFile("file")
+		if err != nil {
+			return err
+		}
+
+		userID, err := jwt.GetUser(c)
+		if err != nil {
+			return err
+		}
+
+		req.UserID = userID
+		valErr := ch.val.Validate(file)
+		if valErr != nil {
+			return valErr
+		}
+
+		req.File = file
+		resp, err := ch.chatService.CreateChatWithOCR(c.Context(), req)
+		if err != nil {
+			return err
+		}
+
+		return response.Success(c, "chats", resp)
 	}
 }

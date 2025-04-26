@@ -67,7 +67,7 @@ func (c *claude) CreateChat(req dto.ChatRequest) (dto.ChatResponse, error) {
 				Content: []anthropic.MessageContent{{Type: "text", Text: &userPrompt}},
 			},
 		},
-		MaxTokens: 512,
+		MaxTokens: 1024,
 	})
 	if err != nil {
 		var e *anthropic.APIError
