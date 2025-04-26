@@ -27,7 +27,7 @@ type IUserService interface {
 	GetUser(ctx context.Context, req dto.TokenLoginRequest) (dto.TokenLoginResponse, error)
 	Update(ctx context.Context, req dto.UpdateRequest) error
 	Delete(ctx context.Context, req dto.DeleteRequest) error
-	FindByEmail(ctx context.Context, email string) (entity.User, error)
+	FindByEmail(ctx context.Context, email string) (dto.ConvertUserEntity, error)
 	SendNotification(ctx context.Context, req dto.NotificationRequest) error
 	UploadProfileImage(ctx context.Context, id uuid.UUID, file *multipart.FileHeader) (string, error)
 }
@@ -184,17 +184,15 @@ func (us *userService) GoogleLogin(ctx context.Context, req dto.GoogleLoginReque
 		return dto.LoginResponse{}, &response.ErrJWTToken
 	}
 
-	resp := dto.LoginResponse{
-		DisplayName: user.DisplayName,
-		ID:          user.ID,
-		Token:       token,
-	}
-
 	us.logger.WithFields(map[string]interface{}{
 		"email": user.Email,
 	}).Info("[userService.GoogleLogin] user logged in")
 
-	return resp, nil
+	return dto.LoginResponse{
+		DisplayName: user.DisplayName,
+		ID:          user.ID,
+		Token:       token,
+	}, nil
 }
 
 func (us *userService) GetUser(ctx context.Context, req dto.TokenLoginRequest) (dto.TokenLoginResponse, error) {
@@ -294,20 +292,28 @@ func (us *userService) Delete(ctx context.Context, req dto.DeleteRequest) error 
 	return nil
 }
 
-func (us *userService) FindByEmail(ctx context.Context, email string) (entity.User, error) {
+func (us *userService) FindByEmail(ctx context.Context, email string) (dto.ConvertUserEntity, error) { 
 	user, err := us.ur.FindByEmail(ctx, email)
 	if err != nil {
 		us.logger.WithFields(map[string]interface{}{
 			"error": err.Error(),
 			"email": email,
 		}).Error("[userService.FindByEmail] failed to find user by email")
-		return entity.User{}, err
+		return dto.ConvertUserEntity{}, err
 	}
 
 	us.logger.WithFields(map[string]interface{}{
 		"email": email,
 	}).Info("[userService.FindByEmail] user found by email")
-	return user, nil
+	return dto.ConvertUserEntity{
+		ID:          user.ID,
+		DisplayName: user.DisplayName,
+		Email:       user.Email,
+		Image:       user.Image,
+		Point:       user.Point,
+		CreatedAt:   user.CreatedAt,
+		UpdatedAt:   user.UpdatedAt,
+	}, nil
 }
 
 func (us *userService) SendNotification(ctx context.Context, req dto.NotificationRequest) error {
