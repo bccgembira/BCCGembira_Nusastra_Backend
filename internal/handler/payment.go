@@ -36,10 +36,10 @@ func (ph *paymentHandler) CreatePayment() fiber.Handler {
 			return err
 		}
 
-		req.Amount = 10000
+		req.Amount = 15000
 
 		if req.Type == "premium" {
-			req.Amount = 15000
+			req.Amount = 20000
 		}
 
 		userID, err := jwt.GetUser(c)
