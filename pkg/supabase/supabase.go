@@ -62,7 +62,7 @@ func (us *supabase) Upload(file *multipart.FileHeader) (string, error) {
 		return "", err
 	}
 
-	req.Header.Set("Authorization", "Bearer "+us.token)
+	req.Header.Set("Authorization", "Bearer "+ us.token)
 	req.Header.Set("Content-Type", file.Header.Get("Content-Type"))
 
 	resp, err := us.client.Do(req)
