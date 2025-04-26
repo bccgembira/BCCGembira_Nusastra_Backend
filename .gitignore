@@ -30,3 +30,6 @@ proto
 go.sum
 go.mod
 *test
+
+**/google.go
+**/notification.html
