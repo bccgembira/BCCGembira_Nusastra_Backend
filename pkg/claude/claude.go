@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
+	"strings"
 
 	"github.com/CRobinDev/BCCGembira_Nusastra/internal/dto"
 	"github.com/CRobinDev/BCCGembira_Nusastra/pkg/response"
@@ -48,7 +50,7 @@ func (c *claude) CreateChat(req dto.ChatRequest) (dto.ChatResponse, error) {
 	var modelPrompt string
 
 	if req.Type != "image" {
-		modelPrompt = "Translate the following Indonesian regional dialect or language to standard Bahasa Indonesia. Provide a response with: 'translation': the standard Indonesian translation. Format: {\"translation\": \"Saya pusing\"} Input text to translate: [INPUT_TEXT]"
+		modelPrompt = fmt.Sprintf("Translate the following text from %s to %s. Provide a response with: 'source_language': the detected dialect/language, 'translation': the standard Indonesian translation. Format: {\"source_language\": \"[SOURCE_LANGUAGE]\", \"translation\": \"[TRANSLATION]\"}. Input text to translate: [INPUT_TEXT]", req.SourceLanguage, req.TargetLanguage)
 	} else {
 		modelPrompt = "You are an assistant that translates Indonesian regional languages and dialects into standard Bahasa Indonesia. Analyze input text and provide a JSON response with: 1) 'source_language': the detected dialect/language, 2) 'translation': the standard Indonesian translation, and 3) 'explanation': cultural context and usage explanation of key phrases. Format example: {\"source_language\": \"Sundanese\", \"translation\": \"Menurut saya, saya tidak bisa datang.\", \"explanation\": \"'Saur' berasal dari tradisi Sunda dalam berdialog sopan dengan orang yang lebih tua, menunjukkan rasa hormat. Contoh: 'Saur abdi, teu tiasa sumping.'\"} If language is unidentifiable, mark as 'Unidentified'. I understand various Indonesian languages including Javanese, Sundanese, Balinese, Madurese, Minangkabau, Batak, Bugis, Acehnese, Betawi, and regional dialects. Provide only the JSON response, no additional text."
 	}
@@ -87,8 +89,9 @@ func (c *claude) CreateChat(req dto.ChatRequest) (dto.ChatResponse, error) {
 		"resp": resp.Content[0].GetText(),
 	}).Info("Claude API response received")
 
+	jsonPart := strings.SplitN(resp.Content[0].GetText(), "\n\n", 2)[0]
 	var typeResp typeResponse
-	err = json.Unmarshal([]byte(resp.Content[0].GetText()), &typeResp)
+	err = json.Unmarshal([]byte(jsonPart), &typeResp)
 	if err != nil {
 		c.log.WithFields(map[string]interface{}{
 			"error": err.Error(),
@@ -99,7 +102,7 @@ func (c *claude) CreateChat(req dto.ChatRequest) (dto.ChatResponse, error) {
 	userResp := dto.ChatResponse{
 		ID:             resp.ID,
 		UserID:         req.UserID,
-		Translation: 	typeResp.Translation,
+		Translation:    typeResp.Translation,
 		SourceLanguage: typeResp.SourceLanguage,
 		Explanation:    typeResp.Explanation,
 	}
