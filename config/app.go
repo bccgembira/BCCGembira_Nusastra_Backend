@@ -7,9 +7,9 @@ import (
 	"github.com/CRobinDev/BCCGembira_Nusastra/internal/service"
 	"github.com/CRobinDev/BCCGembira_Nusastra/pkg/claude"
 	"github.com/CRobinDev/BCCGembira_Nusastra/pkg/gomail"
-	"github.com/CRobinDev/BCCGembira_Nusastra/pkg/google"
 	"github.com/CRobinDev/BCCGembira_Nusastra/pkg/jwt"
 	"github.com/CRobinDev/BCCGembira_Nusastra/pkg/log"
+	"github.com/CRobinDev/BCCGembira_Nusastra/pkg/midtrans"
 	"github.com/CRobinDev/BCCGembira_Nusastra/pkg/supabase"
 	"github.com/CRobinDev/BCCGembira_Nusastra/pkg/validator"
 	"github.com/gofiber/fiber/v2"
@@ -26,8 +26,7 @@ func StartApp(config *AppConfig) {
 	val := validator.NewValidator()
 	gomail := gomail.NewGomail()
 	logger := log.NewLogger()
-	oauth := google.NewGoogleOAuth()
-	// midtrans := midtrans.NewMidtrans()
+	midtrans := midtrans.NewMidtrans()
 	supabase := supabase.NewSupabase()
 	claude := claude.NewClaude(logger)
 
@@ -35,18 +34,20 @@ func StartApp(config *AppConfig) {
 	userService := service.NewUserService(userRepository, jwt, gomail, supabase, logger)
 	userHandler := handler.NewUserHandler(userService, val)
 
-	googleHandler := handler.NewGoogleHandler(val, userService, oauth)
-
 	chatRepository := repository.NewChatRepository(config.DB, logger)
 	chatService := service.NewChatService(chatRepository, logger, claude)
 	chatHandler := handler.NewChatHandler(chatService, val)
-	
+
+	paymentRepository := repository.NewPaymentRepository(config.DB, logger)
+	paymentService := service.NewPaymentService(paymentRepository, userRepository, logger, midtrans)
+	paymentHandler := handler.NewPaymentHandler(paymentService, val)
+
 	routes := route.Config{
-		App:           config.App,
-		UserHandler:   userHandler,
-		GoogleHandler: googleHandler,
-		ChatHandler: chatHandler,
-		Jwt:           jwt,
+		App:            config.App,
+		UserHandler:    userHandler,
+		PaymentHandler: paymentHandler,
+		ChatHandler:    chatHandler,
+		Jwt:            jwt,
 	}
 
 	routes.Register()

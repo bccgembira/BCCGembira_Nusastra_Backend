@@ -29,6 +29,12 @@ func Migrate(db *gorm.DB) error {
 	err := db.AutoMigrate(
 		&entity.User{},
 		&entity.Chat{},
+		&entity.Quiz{},
+		&entity.Question{},
+		&entity.QuestionChoice{},
+		&entity.QuizAttempt{},
+		&entity.UserAnswer{},
+		&entity.Payment{},
 	)
 	if err != nil {
 		return &response.ErrMigrateDatabase

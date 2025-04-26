@@ -10,7 +10,7 @@ import (
 type Config struct {
 	App           *fiber.App
 	UserHandler   handler.IUserHandler
-	GoogleHandler handler.IGoogleHander
+	PaymentHandler handler.IPaymentHandler
 	ChatHandler   handler.IChatHandler
 	Jwt           jwt.IJWT
 }
@@ -23,8 +23,8 @@ func (c *Config) Register() {
 	})
 
 	c.userRoutes(api)
-	c.googleRoutes(api)
 	c.chatRoutes(api)
+	c.paymentRoutes(api)
 }
 
 func (c *Config) userRoutes(r fiber.Router) {
@@ -38,15 +38,16 @@ func (c *Config) userRoutes(r fiber.Router) {
 	user.Post("/notification", middleware.Authenticate(c.Jwt), c.UserHandler.Notification())
 }
 
-func (c *Config) googleRoutes(r fiber.Router) {
-	google := r.Group("/oauth")
-	google.Get("/redirect", c.GoogleHandler.GoogleLoginRedirect())
-	google.Get("/callback", c.GoogleHandler.GoogleCallback())
-	google.Post("/login", c.GoogleHandler.GoogleLogin())
-}
 
 func (c *Config) chatRoutes(r fiber.Router) {
 	chat := r.Group("/chats")
 	chat.Post("/create-chat", middleware.Authenticate(c.Jwt), c.ChatHandler.CreateChat())
+	chat.Post("/create-chat-ocr", middleware.Authenticate(c.Jwt), c.ChatHandler.CreateChatWithOCR())
 	chat.Get("/:id", middleware.Authenticate(c.Jwt), c.ChatHandler.GetChatByID())
+}
+
+func (c *Config) paymentRoutes(r fiber.Router) {
+	payment := r.Group("/payments")
+	payment.Post("/update-status", c.PaymentHandler.UpdatePaymentStatus())
+	payment.Post("/create-payment", middleware.Authenticate(c.Jwt), c.PaymentHandler.CreatePayment())
 }
