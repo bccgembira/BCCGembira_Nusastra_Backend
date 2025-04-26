@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -48,4 +50,14 @@ type TokenLoginResponse struct {
 	ID          uuid.UUID `json:"userID"`
 	DisplayName string    `json:"display_name"`
 	Email       string    `json:"email"`
+}
+
+type ConvertUserEntity struct {
+	ID          uuid.UUID `json:"id"`
+	DisplayName string    `json:"display_name"`
+	Email       string    `json:"email"`
+	Image       string    `json:"image"`
+	Point       int64     `json:"point"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
