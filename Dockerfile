@@ -7,7 +7,9 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 go build -o nusastra cmd/app/main.go
+RUN go mod tidy
+
+RUN go build -o nusastra cmd/app/main.go
 
 FROM alpine:latest AS prod
 
