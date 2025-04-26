@@ -28,15 +28,16 @@ func NewLogger() *logrus.Logger {
 			FullTimestamp:   true,
 			TimestampFormat: "Jan 02 15:04:05",
 			CallerPrettyfier: func(f *runtime.Frame) (function string, file string) {
-				repopath := "C:/Users/Christopher Robin/Documents/Coding/Golang/Nusastra/" // JANGAN LUPA GANTI PAAKE ENV
-				filename := strings.Replace(f.File, repopath, " ", 1)
+				repopath := "./"
+				absRepoPath, _ := filepath.Abs(repopath)
+				filename := strings.Replace(f.File, absRepoPath, " ", 1)
 				return fmt.Sprintf("%s()", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
 			},
 			ForceColors:      true,
 			QuoteEmptyFields: true,
 		})
-		// JANGAN LUPA GANTI PATH PAAKE ENV
-		logFileName := filepath.Join("C:/Users/Christopher Robin/Documents/Coding/Golang/Nusastra/storage/logs", fmt.Sprintf("app-%s.log", time.Now().Format("2006-01-02")))
+		
+		logFileName := filepath.Join("./storage/logs/", fmt.Sprintf("app-%s.log", time.Now().Format("2006-01-02")))
 		file, err := os.OpenFile(logFileName, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 		if err != nil {
 			panic(fmt.Sprintf("failed to open log file: %v", err))
