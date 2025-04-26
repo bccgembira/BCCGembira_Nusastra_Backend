@@ -35,7 +35,7 @@ Bahasa adalah jembatan budaya. Dengan ribuan bahasa daerah yang tersebar di selu
 ![Docker](https://img.shields.io/badge/-Docker-2496ED?logo=docker&logoColor=white&style=for-the-badge)
 ![Docker Compose](https://img.shields.io/badge/-Docker%20Compose-2496ED?logo=docker&logoColor=white&style=for-the-badge)
 ![Midtrans](https://img.shields.io/badge/-Midtrans-00A859?logo=midtrans&logoColor=red&style=for-the-badge)
-![OCR.space](https://img.shields.io/badge/-OCR.space-FF6F00?logo=ocrspace&logoColor=white&style=for-the-badge)
+![OCR Space](https://img.shields.io/badge/-OCR.space-FF6F00?logo=ocrspace&logoColor=white&style=for-the-badge)
 ![GitHub Actions](https://img.shields.io/badge/-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white&style=for-the-badge)
 ![Claude AI](https://img.shields.io/badge/-Claude%20AI-FF6F00?logo=claude&logoColor=white&style=for-the-badge)
 
@@ -45,15 +45,8 @@ Bahasa adalah jembatan budaya. Dengan ribuan bahasa daerah yang tersebar di selu
 # Download Go here: https://golang.org/dl/
 
 # Step 2: Clone the repository
-git clone https://github.com/CRobinDev/bcc-gembira.git
+git clone https://github.com/CRobinDev/BCCGembira_Nusastra.git
 cd bcc-gembira
 
 # Step 3: Install dependencies
 go mod tidy
-
-# Step 4: Build the project
-make build
-
-# Step 5: Run the project 
-make run
-```
