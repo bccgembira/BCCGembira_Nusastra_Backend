@@ -42,12 +42,17 @@ func StartApp(config *AppConfig) {
 	paymentService := service.NewPaymentService(paymentRepository, userRepository, logger, midtrans)
 	paymentHandler := handler.NewPaymentHandler(paymentService, val)
 
+	connectionRepository := repository.NewConnectionRepository(config.DB, logger)
+	connectionService := service.NewConnectionService(connectionRepository, userRepository, logger)
+	connectionHandler := handler.NewConnectionHandler(connectionService, val)
+
 	routes := route.Config{
-		App:            config.App,
-		UserHandler:    userHandler,
-		PaymentHandler: paymentHandler,
-		ChatHandler:    chatHandler,
-		Jwt:            jwt,
+		App:               config.App,
+		UserHandler:       userHandler,
+		PaymentHandler:    paymentHandler,
+		ConnectionHandler: connectionHandler,
+		ChatHandler:       chatHandler,
+		Jwt:               jwt,
 	}
 
 	routes.Register()

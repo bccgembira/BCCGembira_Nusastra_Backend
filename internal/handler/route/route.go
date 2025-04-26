@@ -8,11 +8,12 @@ import (
 )
 
 type Config struct {
-	App           *fiber.App
-	UserHandler   handler.IUserHandler
-	PaymentHandler handler.IPaymentHandler
-	ChatHandler   handler.IChatHandler
-	Jwt           jwt.IJWT
+	App               *fiber.App
+	UserHandler       handler.IUserHandler
+	PaymentHandler    handler.IPaymentHandler
+	ChatHandler       handler.IChatHandler
+	ConnectionHandler handler.IConnectionHandler
+	Jwt               jwt.IJWT
 }
 
 func (c *Config) Register() {
@@ -25,6 +26,7 @@ func (c *Config) Register() {
 	c.userRoutes(api)
 	c.chatRoutes(api)
 	c.paymentRoutes(api)
+	c.connectionRoutes(api)
 }
 
 func (c *Config) userRoutes(r fiber.Router) {
@@ -38,7 +40,6 @@ func (c *Config) userRoutes(r fiber.Router) {
 	user.Post("/notification", middleware.Authenticate(c.Jwt), c.UserHandler.Notification())
 }
 
-
 func (c *Config) chatRoutes(r fiber.Router) {
 	chat := r.Group("/chats")
 	chat.Post("/create-chat", middleware.Authenticate(c.Jwt), c.ChatHandler.CreateChat())
@@ -50,4 +51,11 @@ func (c *Config) paymentRoutes(r fiber.Router) {
 	payment := r.Group("/payments")
 	payment.Post("/update-status", c.PaymentHandler.UpdatePaymentStatus())
 	payment.Post("/create-payment", middleware.Authenticate(c.Jwt), c.PaymentHandler.CreatePayment())
+}
+
+func (c *Config) connectionRoutes(r fiber.Router) {
+	connection := r.Group("/connections")
+	connection.Post("/create-connection", middleware.Authenticate(c.Jwt), c.ConnectionHandler.CreateConnection())
+	connection.Delete("/delete-connection", middleware.Authenticate(c.Jwt), c.ConnectionHandler.DeleteConnection())
+	connection.Get("/all-connections", middleware.Authenticate(c.Jwt), c.ConnectionHandler.GetAllConnection())
 }
