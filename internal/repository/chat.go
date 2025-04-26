@@ -13,7 +13,6 @@ import (
 type IChatRepository interface {
 	SaveChat(ctx context.Context, chat *entity.Chat) error
 	GetChatByID(ctx context.Context, id string) (entity.Chat, error)
-	// DeleteOldHistory(userID string) error
 }
 
 type chatRepository struct {
