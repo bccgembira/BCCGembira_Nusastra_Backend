@@ -17,6 +17,7 @@ type User struct {
 	CreatedAt   time.Time      `gorm:"type:timestamp;autoCreateTime"`
 	UpdatedAt   time.Time      `gorm:"type:timestamp;autoUpdateTime"`
 	DeletedAt   gorm.DeletedAt `gorm:"type:timestamp;index"`
+	Connections []Connection `gorm:"many2many:user_connections;"`
 }
 
 type UserAnswer struct {
